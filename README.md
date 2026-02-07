@@ -56,5 +56,21 @@ The scripts directory contains analysis pipelines used to generate results:
 - `04_sensitivity_analysis.py`  
   Evaluates robustness of correlations under different binning and filtering choices.
 
+## Quick Start
+
+1. Clone repository
+   git clone https://github.com/USER/REPO.git
+
+2. Install dependencies
+   pip install -r requirements.txt
+
+3. Download sunspot dataset from SILSO and place it in the project folder.
+
+4. Run desired analysis script, for example:
+   python scripts/Annual_correlation.py
+
+Analysis performed using Python 3.10.12
+
+Data last updated: 2025-09-30
 
 
