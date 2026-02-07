@@ -28,8 +28,7 @@ CME-Sunspot-Correlation-Analysis/
 ├── scripts/
 │ ├── 02_normality_tests.py
 │ ├── 03_correlation_analysis.py
-│ ├── 04_bootstrap_ci.py
-│ └── 05_sensitivity_analysis.py
+│ └── 04_sensitivity_analysis.py
 └── data/
 └── README.md
 
