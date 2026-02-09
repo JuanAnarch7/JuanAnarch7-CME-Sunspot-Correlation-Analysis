@@ -74,3 +74,22 @@ Analysis performed using Python 3.10.12
 Data last updated: 2025-09-30
 
 
+## File Name Note
+
+The official yearly sunspot dataset downloaded from SILSO is named:
+
+SN_y_tot_V2.0.txt
+
+Some operating systems or browsers may automatically rename the file
+(e.g., `SN_y_tot_V2.0(1).txt`) if it is downloaded multiple times.
+
+If this occurs, either rename the file back to the original name or update
+the filename in the scripts accordingly.
+
+
+
+
+Scripts are modular and may be executed separately depending on the
+analysis require
+
+
