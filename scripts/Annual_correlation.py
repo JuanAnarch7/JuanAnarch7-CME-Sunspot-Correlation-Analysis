@@ -12,6 +12,12 @@ plt.rcParams['figure.dpi'] = 600
 plt.rcParams['font.size'] = 10
 
 # ------------------------------------------------------------
+# REPRODUCIBILITY SEED
+# ------------------------------------------------------------
+RANDOM_SEED = 42
+rng = np.random.default_rng(RANDOM_SEED)
+
+# ------------------------------------------------------------
 # 1. DATA LOADING
 # ------------------------------------------------------------
 df_sn = pd.read_csv(
@@ -34,11 +40,11 @@ df_cmes['Year'] = df_cmes['Fecha'].dt.year
 
 # Definition of analysis periods ==================rates, using the same velocity-based CME
 # Full period
-df_cmes = df_cmes[(df_cmes['Fecha'] >= '1996-01-01') & (df_cmes['Fecha'] <= '2025-09-30')]
+#df_cmes = df_cmes[(df_cmes['Fecha'] >= '1996-01-01') & (df_cmes['Fecha'] <= '2025-09-30')]
 # Cycle 23
 #df_cmes = df_cmes[(df_cmes['Fecha'] >= '1996-01-01') & (df_cmes['Fecha'] <= '2008-12-31')]
 # Cycle 24
-#df_cmes = df_cmes[(df_cmes['Fecha'] >= '2009-01-01') & (df_cmes['Fecha'] <= '2019-12-31')]
+df_cmes = df_cmes[(df_cmes['Fecha'] >= '2009-01-01') & (df_cmes['Fecha'] <= '2019-12-31')]
 # Cycle 25 (June 2025)
 #df_cmes = df_cmes[(df_cmes['Fecha'] >= '2020-01-01') & (df_cmes['Fecha'] <= '2025-09-30')]
 # ============================================================
@@ -72,12 +78,20 @@ def align_time_series(df_sn, df_cmes, vmin, vmax):
     return merged_df.dropna(subset=["SunspotNumber", "CME_Count"])
 
 
-def bootstrap_ci(x, y, n_bootstrap=1000):
+def bootstrap_ci(x, y, n_bootstrap=1000, rng=None):
+    """
+    Calcula los intervalos de confianza mediante bootstrap.
+    Si no se proporciona un generador (rng), se crea uno nuevo.
+    """
+    if rng is None:
+        rng = np.random.default_rng()
+        
     boot_r = []
     n = len(x)
 
     for _ in range(n_bootstrap):
-        idx = np.random.choice(n, size=n, replace=True)
+        # Muestreo con reemplazo usando el generador fijo
+        idx = rng.integers(0, n, size=n)
         r, _ = spearmanr(x.iloc[idx], y.iloc[idx])
         boot_r.append(r)
 
@@ -89,6 +103,7 @@ def bootstrap_ci(x, y, n_bootstrap=1000):
 # ------------------------------------------------------------
 print("\n" + "="*70)
 print("Correlation analysis by velocity bin")
+print(f"Bootstrap Seed: {RANDOM_SEED}")
 print("="*70)
 
 results = []
@@ -105,9 +120,11 @@ for vmin, vmax, label in velocity_bins:
         aligned_df["CME_Count"]
     )
 
+    # Pasamos el generador 'rng' a la función de bootstrap
     ci_low, ci_high = bootstrap_ci(
         aligned_df["SunspotNumber"],
-        aligned_df["CME_Count"]
+        aligned_df["CME_Count"],
+        rng=rng
     )
 
     n_total = len(df_cmes[
@@ -135,11 +152,8 @@ results_df = pd.DataFrame(results)
 # ============================================================
 # FIGURE: Correlation vs bin velocity
 # ============================================================
-
 v_centers = (results_df['Vmin'] + results_df['Vmax']) / 2
-
 fig, ax = plt.subplots(figsize=(7, 5))
-
 markers = ['o', '^', 's', 'D']
 
 for i, row in results_df.iterrows():
@@ -159,18 +173,15 @@ for i, row in results_df.iterrows():
     )
 
 ax.axhline(0.7, linestyle='--', color='black', alpha=0.4)
-
 ax.set_xlabel('Bin Central Velocity (km s$^{-1}$)')
 ax.set_ylabel('Spearman r')
-
 ax.grid(True, linestyle='--', alpha=0.3)
 ax.tick_params(top=True, right=True, direction='in')
 ax.minorticks_on()
-
 ax.legend(title="Bin speed", frameon=False)
 
 plt.tight_layout()
-plt.savefig('correlation_vs_velocity_annual_full_period.pdf', dpi=600)
+plt.savefig('correlation_vs_velocity_annual_SC_24.pdf', dpi=600)
 plt.close()
 
-print("\nFigure saved: correlation_vs_velocity_annual_full_period.pdf")
+print("\nFigure saved: correlation_vs_velocity_annual_SC_24.pdf")
