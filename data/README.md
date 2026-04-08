@@ -3,9 +3,9 @@
 This folder documents the datasets used in the CME–sunspot
 correlation analysis.
 
-## Included Dataset
+## Included Datasets
 
-### Processed CME Catalog
+### 1. Processed CME Catalog
 
 File: "datos_procesados_2025_09_30.csv"
 
@@ -14,6 +14,42 @@ catalog after preprocessing.
 
 The dataset is lightweight (~3 MB) and is included to allow direct
 reproducibility of the analysis.
+
+### 2. Annual Paired Time Series
+
+File: `master_annual_paired_series.csv`
+
+This file contains the **aligned annual time series** used in the correlation analysis.  
+It includes:
+
+- Annual sunspot numbers  
+- Annual CME counts for each velocity bin:
+  - Slow (0–600 km/s)
+  - Moderate (600–1000 km/s)
+  - Fast (1000–1500 km/s)
+  - Extreme (>1500 km/s)
+
+Each row corresponds to a calendar year, and all series are **synchronized**, ensuring that
+correlation calculations are performed on consistent paired observations.
+
+---
+
+### 3. Monthly Paired Time Series
+
+File: `master_monthly_paired_series_corrected.csv`
+
+This file contains the **aligned monthly time series** used in the high-resolution analysis.  
+It includes:
+
+- Monthly sunspot numbers  
+- Monthly CME counts for each velocity bin
+
+Key features:
+
+- Time series are aligned at monthly resolution
+- Data gaps due to SOHO/LASCO interruptions (e.g., 1998–1999) have been removed
+- The dataset is prepared for **block bootstrap resampling**
+
 
 ### Column Language
 
@@ -58,5 +94,30 @@ the project directory.
 
 ## Reproducibility
 
-All analyses can be reproduced using the processed CME dataset
-included here together with the publicly available sunspot data.
+All analyses can be reproduced using:
+
+- The processed CME catalog
+- The aligned annual and monthly paired datasets
+- Publicly available sunspot data
+
+The repository includes:
+
+- Fully prepared time series for correlation analysis
+- Scripts for statistical analysis and figure generation
+- A complete computational environment specification (`requirements.txt`)
+
+The inclusion of pre-aligned datasets allows users to:
+
+- Directly reproduce correlation results
+- Validate intermediate data products
+- Avoid reprocessing steps if desired
+
+---
+
+## Notes on Statistical Analysis
+
+- Annual analyses use **paired bootstrap resampling**
+- Monthly analyses use **block bootstrap resampling** (block size = 12 months)
+
+This distinction reflects the different levels of temporal autocorrelation
+present in the data and ensures robust estimation of confidence intervals
