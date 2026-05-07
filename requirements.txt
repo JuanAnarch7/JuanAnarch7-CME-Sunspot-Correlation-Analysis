@@ -21,7 +21,6 @@ scipy>=1.7.0,<2.0.0           # Scientific computing and statistical functions
 # Statistical Analysis
 # ----------------------------------------------------------------------------
 statsmodels>=0.13.0,<1.0.0    # Statistical models and tests
-scikit-learn>=1.0.0,<2.0.0    # Machine learning utilities (if used)
 
 # Multivariate Normality Tests
 # ----------------------------------------------------------------------------
